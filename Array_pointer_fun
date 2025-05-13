@@ -1,0 +1,33 @@
+#include <stdio.h>
+
+int main() {
+    int v, count;
+    int arr[10];
+    int *p;
+
+    // Input using pointer
+    for (p = arr; p < arr + 10; p++) {
+        scanf("%d", &v);
+        *p = v;
+    }
+
+    // Print in reverse using pointer
+    printf("\n");
+    for (p = arr + 9; p >= arr; p--) {
+        printf("numb[%ld] = %d\n", p - arr, *p);
+    }
+
+    // Search for 100 using pointer
+    printf("\nSearching for entries equal to 100\n\n");
+    count = 0;
+    for (p = arr; p < arr + 10; p++) {
+        if (*p == 100) {
+            count++;
+            printf("Found 100 at %ld\n", p - arr);
+        }
+    }
+
+    printf("\nFound %d entries with 100\n", count);
+
+    return 0;
+}
