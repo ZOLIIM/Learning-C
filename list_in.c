@@ -41,6 +41,7 @@ struct list {
 int main()
 {
     void list_add();
+	void list_remove();
     void list_dump();
     struct lnode * list_find();
 
@@ -71,6 +72,21 @@ int main()
 
     list_add(&mylist, 40);
     list_dump(&mylist);
+ 	list_add(&mylist, 10);
+    list_add(&mylist, 20);
+    list_add(&mylist, 30);
+    list_dump(&mylist);
+
+    list_remove(&mylist, 42);
+
+    list_remove(&mylist, 10);
+    list_dump(&mylist);
+
+    list_remove(&mylist, 30);
+    list_dump(&mylist);
+
+    list_add(&mylist, 40);
+    list_dump(&mylist);
 
 }
 
@@ -83,3 +99,42 @@ void list_dump(lst)
         printf("  %d\n", cur->value);
     }
 }
+
+void list_remove(lst, value)
+    struct list *lst;
+    int value;
+{
+    int i=NULL;
+  	struct lnode *cur;
+  	struct lnode *prev=NULL;
+  
+    for(cur=lst->head; cur != NULL ; cur=cur->next) {
+      
+      if(cur->value == value){
+		if(prev==NULL){
+        //HEAD
+          //printf("HEAD");
+          lst->head=cur->next;
+          break;
+        }
+        
+        else if(cur->next==NULL){
+        //TAIL
+         // printf("TAIL");
+         prev->next=NULL;
+         lst->tail=prev;
+          break;
+        }
+        
+        else{
+         //MID 
+          
+         //printf("MID");
+         prev->next=cur->next;
+        }
+      }
+      else{
+      prev=cur;
+      }
+
+    }
