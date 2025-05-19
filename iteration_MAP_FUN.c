@@ -29,11 +29,10 @@ if(self->__head==NULL) {
 
 struct MapEntry* __MapIter_next(struct MapIter* self)
 {
-  struct MapEntry* cur;
-   
+  
   if (self->__current==NULL) return NULL;
-  if (self->__current->__next==NULL) return NULL;
-  cur=self->__current->__next;
+  struct MapEntry* cur=self->__current;
+  self->__current=self->__current->__next;
   return cur;
 }
 
