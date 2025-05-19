@@ -14,15 +14,16 @@ void __Map_put(struct Map* self, char *key, int value) {
     new->key = key; 
     new->value = value;
     new->__next = NULL;
-  if(self->__head==NULL) {
-    new->__prev = NULL;
-    self->__head = new;
-  }
-   else{
+
     new->__prev = self->__tail;
     self->__tail->__next = new;
 	self->__tail = new;
-   }
+	
+if(self->__head==NULL) {
+    new->__prev = NULL;
+    self->__head = new;
+  }
+
     self->__count++;
 }
 
