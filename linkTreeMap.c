@@ -2,18 +2,19 @@ void __TreeMap_put(struct TreeMap* self, char *key, int value) {
     struct TreeMapEntry *cur = self->__root;
     struct TreeMapEntry *parent = NULL;
     struct TreeMapEntry *left = NULL, *right = NULL;
-    int cmp;
+    int cmp = 0;
 
-    // Search the tree
+    if (key == NULL) return;
+
+    // Traverse the BST to find the correct location
     while (cur != NULL) {
         cmp = strcmp(key, cur->key);
         if (cmp == 0) {
-            cur->value = value; // Update
+            cur->value = value;
             return;
         }
-
         parent = cur;
-        if (cmp > 0) {
+        if (cmp < 0) {
             right = cur;
             cur = cur->__left;
         } else {
@@ -22,7 +23,7 @@ void __TreeMap_put(struct TreeMap* self, char *key, int value) {
         }
     }
 
-    // Create new entry
+    // Allocate and initialize new entry
     struct TreeMapEntry *new = malloc(sizeof(*new));
     new->key = strdup(key);
     new->value = value;
@@ -30,31 +31,56 @@ void __TreeMap_put(struct TreeMap* self, char *key, int value) {
     new->__right = NULL;
     new->__next = NULL;
 
-    // First node
+    // Insert into linked list
     if (self->__head == NULL) {
         self->__head = new;
-        self->__root = new;
+    } else if (left == NULL) {
+        // Insert at the front of the list
+        new->__next = right;
+        self->__head = new;
     } else {
-        // Insert in linked list
-        if (left != NULL) {
-            new->__next = left->__next;
-            left->__next = new;
-        } else {
-            new->__next = self->__head;
-            self->__head = new;
-        }
-        // Insert in tree
-        if (strcmp(key, parent->key) > 0) {
-            parent->__left = new;
-        } else {
-            parent->__right = new;
-        }
+        // Insert after 'left' in the linked list
+        new->__next = left->__next;
+        left->__next = new;
     }
 
-    self->__count++;
-    __Map_check(self, left, key, right);  // For debugging
+    // Insert into tree
+    if (self->__root == NULL) {
+        self->__root = new;
+    } else if (cmp < 0) {
+        parent->__left = new;
+    } else {
+        parent->__right = new;
+    }
+
+    // Check position for debug
+
+ self->__count++;
+  if(left==NULL && right==NULL);
+  else printf("Check position: %s < %s > %s\n", (left ? left->key : "0"),
+            key, (right ? right->key : "0") );
+  
+   
 }
 
+int __TreeMap_get(struct TreeMap* self, char *key, int def) {
+    struct TreeMapEntry *cur = self->__root;
+
+    while (cur != NULL) {
+        int cmp = strcmp(key, cur->key);
+        if (cmp == 0) return cur->value;
+        else if (cmp > 0) cur = cur->__left;
+        else cur = cur->__right;
+    }
+    return def;
+}
+
+struct TreeMapEntry* __TreeMapIter_next(struct TreeMapIter* self) {
+    struct TreeMapEntry *cur = self->__current;
+    if (cur == NULL) return NULL;
+    self->__current = cur->__next;
+    return cur;
+}
 int __TreeMap_get(struct TreeMap* self, char *key, int def) {
     struct TreeMapEntry *cur = self->__root;
 
